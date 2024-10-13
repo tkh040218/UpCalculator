@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Cell Shape Ups Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #eef2f3;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        label {
+            margin-bottom: 5px;
+            display: block;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #4CAF50;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus {
+            border-color: #3e8e41;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e7f3fe;
+            border-left: 5px solid #2196F3;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .table-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .ups-table {
+            display: inline-block;
+            border-collapse: collapse;
+        }
+        .ups-table td {
+            text-align: center;
+            border: 1px solid black;
+            font-weight: bold;
+        }
+        .empty-cell {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dynamic Cell Shape Ups Calculator</h1>
+        <form id="calculator-form">
+            <label for="paperLength">Paper Length (mm):</label>
+            <input type="number" id="paperLength" required>
+
+            <label for="paperWidth">Paper Width (mm):</label>
+            <input type="number" id="paperWidth" required>
+
+            <label for="bookLength">Book Length (mm):</label>
+            <input type="number" id="bookLength" required>
+            
+            <label for="bookWidth">Book Width (mm):</label>
+            <input type="number" id="bookWidth" required>
+            
+            <button type="submit">Calculate</button>
+        </form>
+        <div id="result"></div>
+        <div class="table-container" id="table-container"></div>
+    </div>
+
+    <script>
+        document.getElementById('calculator-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const paperWidth = parseFloat(document.getElementById('paperWidth').value);
+            const paperLength = parseFloat(document.getElementById('paperLength').value);
+            const bookWidth = parseFloat(document.getElementById('bookWidth').value);
+            const bookLength = parseFloat(document.getElementById('bookLength').value);
+            
+            function calculateUps(paperDim1, paperDim2, bookDim1, bookDim2) {
+                const ups1 = Math.floor(paperDim1 / bookDim1);
+                const ups2 = Math.floor(paperDim2 / bookDim2);
+                return ups1 * ups2;
+            }
+
+            // Calculate ups for both orientations
+            const upsOrientation1 = calculateUps(paperWidth, paperLength, bookWidth, bookLength);
+            const upsOrientation2 = calculateUps(paperWidth, paperLength, bookLength, bookWidth);
+
+            // Choose the orientation with the maximum ups
+            const maxUps = Math.max(upsOrientation1, upsOrientation2);
+            let upsWidth, upsLength;
+
+            if (upsOrientation1 >= upsOrientation2) {
+                upsWidth = Math.floor(paperWidth / bookWidth);
+                upsLength = Math.floor(paperLength / bookLength);
+
+                // Adjust upsWidth and upsLength if space is less than 50mm
+                if (paperWidth - (upsWidth * bookWidth) < 50) {
+                    upsWidth--;
+                }
+                if (paperLength - (upsLength * bookLength) < 50) {
+                    upsLength--;
+                }
+                const finalMaxUps = upsWidth * upsLength;
+                const result = `Ups = ${upsLength} x ${upsWidth} = ${finalMaxUps}`;
+                document.getElementById('result').innerHTML = result;
+                generateTable(upsWidth, upsLength, finalMaxUps, bookWidth, bookLength); // Generate table for orientation 1
+            } else {
+                upsLength = Math.floor(paperWidth / bookLength);
+                upsWidth = Math.floor(paperLength / bookWidth);
+
+                // Adjust upsWidth and upsLength if space is less than 50mm
+                if (paperWidth - (upsLength * bookLength) < 50) {
+                    upsLength--;
+                }
+                if (paperLength - (upsWidth * bookWidth) < 50) {
+                    upsWidth--;
+                }
+                const finalMaxUps = upsLength * upsWidth;
+                const result = `Ups = ${upsLength} x ${upsWidth} = ${finalMaxUps}`;
+                document.getElementById('result').innerHTML = result;
+                generateTable(upsWidth, upsLength, finalMaxUps, bookWidth, bookLength); // Generate table for orientation 2
+            }
+        });
+
+        function generateTable(upsWidth, upsLength, finalMaxUps, bookWidth, bookLength) {
+            const tableContainer = document.getElementById('table-container');
+            tableContainer.innerHTML = ''; // Clear previous table
+
+            const table = document.createElement('table');
+            table.classList.add('ups-table');
+            
+            // Determine cell dimensions
+            let cellWidth, cellHeight;
+            if (bookLength > bookWidth) {
+                cellWidth = '40px';
+                cellHeight = '70px';
+            } else if (bookWidth > bookLength) {
+                cellWidth = '70px';
+                cellHeight = '40px';
+            } else {
+                cellWidth = '50px';
+                cellHeight = '50px';
+            }
+
+            let cellNumber = 1;
+            for (let i = 0; i < upsLength; i++) { // Create rows based on upsLength
+                const tr = document.createElement('tr');
+                for (let j = 0; j < upsWidth; j++) { // Create columns based on upsWidth
+                    const td = document.createElement('td');
+                    td.style.width = cellWidth;
+                    td.style.height = cellHeight;
+                    if (cellNumber <= finalMaxUps) {
+                        td.textContent = cellNumber++;
+                    } else {
+                        td.classList.add('empty-cell'); // Empty cells to maintain rectangle
+                    }
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+            
+            tableContainer.appendChild(table);
+        }
+    </script>
+</body>
+</html>
