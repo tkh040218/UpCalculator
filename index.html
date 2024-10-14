@@ -143,7 +143,7 @@
                     upsLength--;
                 }
                 const finalMaxUps = upsWidth * upsLength;
-                const result = `Ups = ${upsLength} x ${upsWidth} = ${finalMaxUps}`;
+                const result = `Ups = ${upsLength} * ${upsWidth} = ${finalMaxUps}`;
                 document.getElementById('result').innerHTML = result;
                 generateTable(upsWidth, upsLength, finalMaxUps, bookWidth, bookLength); // Generate table for orientation 1
             } else {
@@ -158,7 +158,7 @@
                     upsWidth--;
                 }
                 const finalMaxUps = upsLength * upsWidth;
-                const result = `Ups = ${upsLength} x ${upsWidth} = ${finalMaxUps}`;
+                const result = `Ups = ${upsLength} * ${upsWidth} = ${finalMaxUps}`;
                 document.getElementById('result').innerHTML = result;
                 generateTable(upsWidth, upsLength, finalMaxUps, bookWidth, bookLength); // Generate table for orientation 2
             }
