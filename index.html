@@ -136,10 +136,10 @@
                 upsLength = Math.floor(paperLength / bookLength);
 
                 // Adjust upsWidth and upsLength if space is less than 50mm
-                if (paperWidth - (upsWidth * bookWidth) < 50) {
+                if (paperWidth - (upsWidth * bookWidth) < 20) {
                     upsWidth--;
                 }
-                if (paperLength - (upsLength * bookLength) < 50) {
+                if (paperLength - (upsLength * bookLength) < 20) {
                     upsLength--;
                 }
                 const finalMaxUps = upsWidth * upsLength;
@@ -151,10 +151,10 @@
                 upsWidth = Math.floor(paperLength / bookWidth);
 
                 // Adjust upsWidth and upsLength if space is less than 50mm
-                if (paperWidth - (upsLength * bookLength) < 50) {
+                if (paperWidth - (upsLength * bookLength) < 20) {
                     upsLength--;
                 }
-                if (paperLength - (upsWidth * bookWidth) < 50) {
+                if (paperLength - (upsWidth * bookWidth) < 20) {
                     upsWidth--;
                 }
                 const finalMaxUps = upsLength * upsWidth;
